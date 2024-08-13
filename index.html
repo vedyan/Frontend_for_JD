@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Description Generator</title>
+</head>
+<body>
+    <h1>Job Description Generator</h1>
+    
+    <h2>Generate Job Description from Job Details</h2>
+    <form id="jobDetailsForm">
+        <label for="job_title">Job Title:</label>
+        <input type="text" id="job_title" name="job_title" required><br><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+
+        <label for="mandatory_skills">Mandatory Skills (comma-separated):</label>
+        <input type="text" id="mandatory_skills" name="mandatory_skills"><br><br>
+
+        <label for="relative_experience">Relative_experience:</label>
+        <input type="number" id="relative_experience" name="relative_experience" required><br><br>
+
+        <label for="overall_experience">Overall Experience:</label>
+        <input type="number" id="overall_experience" name="overall_experience" required><br><br>
+
+        <label for="work_type">Work Type:</label>
+        <input type="text" id="work_type" name="work_type" required><br><br>
+
+        <label for="mode_of_work">Mode of Work:</label>
+        <input type="text" id="mode_of_work" name="mode_of_work" required><br><br>
+
+        <label for="education_requirement">Education Requirement:</label>
+        <input type="text" id="education_requirement" name="education_requirement" required><br><br>
+
+        <label for="ctc">CTC:</label>
+        <input type="text" id="ctc" name="ctc" required><br><br>
+
+        <input type="submit" value="Generate Job Description">
+    </form>
+    
+    <hr>
+
+    <h2>Generate Job Description from PDF</h2>
+    <form id="pdfForm" enctype="multipart/form-data">
+        <input type="file" id="pdfFile" name="pdf_file" required><br><br>
+        <input type="submit" value="Generate Job Description">
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+        document.getElementById("jobDetailsForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/job_description', {
+                method: 'POST',
+                body: JSON.stringify(Object.fromEntries(formData)),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("output").innerText = data.job_description;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        document.getElementById("pdfForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            fetch('/pdf_job_description', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("output").innerText = data.job_description;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
